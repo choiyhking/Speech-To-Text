@@ -17,8 +17,14 @@ torch.hub.download_url_to_file('https://opus-codec.org/static/examples/samples/s
 test_files = glob('/root/LJSpeech-1.1/wavs/*.wav')
 batches = split_into_batches(test_files, batch_size=10)
 
+total_processing_time = 0.0
+t = time.time()
 for batch in batches:
     input = prepare_model_input(read_batch(batch), device=device)
     output = model(input)
     for example in output:
         print("result: ", decoder(example.cpu()))
+
+processing_time = time.time() - t
+total_processing_time += processing_time
+print(f"Detection time: {processing_time:.3f}")
